@@ -29,8 +29,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    switchDisableViewController.on = [[IQKeyboardManager sharedManager] isDisableInViewControllerClass:[CustomViewController class]];
-    switchDisableToolbar.on = [[IQKeyboardManager sharedManager] isDisableToolbarInViewControllerClass:[CustomViewController class]];
+    switchDisableViewController.on = ![[IQKeyboardManager sharedManager] isEnableInViewControllerClass:[CustomViewController class]];
+    switchDisableToolbar.on = ![[IQKeyboardManager sharedManager] isEnableToolbarInViewControllerClass:[CustomViewController class]];
     switchConsiderPreviousNext.on = [[IQKeyboardManager sharedManager] isConsiderToolbarPreviousNextInViewClass:[CustomSubclassView class]];
 }
 
@@ -43,13 +43,13 @@
 {
     [self.view endEditing:YES];
 
-    if (sender.on)
+    if (!sender.on)
     {
-        [[IQKeyboardManager sharedManager] disableInViewControllerClass:[CustomViewController class]];
+        [[IQKeyboardManager sharedManager] enableInViewControllerClass:[CustomViewController class]];
     }
     else
     {
-        [[IQKeyboardManager sharedManager] removeDisableInViewControllerClass:[CustomViewController class]];
+        [[IQKeyboardManager sharedManager] removeEnableInViewControllerClass:[CustomViewController class]];
     }
 }
 
@@ -57,13 +57,13 @@
 {
     [self.view endEditing:YES];
     
-    if (sender.on)
+    if (!sender.on)
     {
-        [[IQKeyboardManager sharedManager] disableToolbarInViewControllerClass:[CustomViewController class]];
+        [[IQKeyboardManager sharedManager] enableToolbarInViewControllerClass:[CustomViewController class]];
     }
     else
     {
-        [[IQKeyboardManager sharedManager] removeDisableToolbarInViewControllerClass:[CustomViewController class]];
+        [[IQKeyboardManager sharedManager] removeEnableToolbarInViewControllerClass:[CustomViewController class]];
     }
 }
 

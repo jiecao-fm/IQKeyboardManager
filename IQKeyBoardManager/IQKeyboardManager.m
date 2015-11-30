@@ -145,11 +145,11 @@ void _IQShowLog(NSString *logString);
     
     /*******************************************/
 
-    /** Set of restricted classes for library */
-    NSMutableSet            *_disabledClasses;
+    /** Set of enabled classes for library */
+    NSMutableSet            *_enabledClasses;
 
-    /** Set of restricted classes for adding toolbar */
-    NSMutableSet            *_disabledToolbarClasses;
+    /** Set of enabled classes for adding toolbar */
+    NSMutableSet            *_enabledToolbarClasses;
 
     /** Set of permitted classes to add all inner textField as siblings */
     NSMutableSet            *_toolbarPreviousNextConsideredClass;
@@ -265,8 +265,8 @@ void _IQShowLog(NSString *logString);
             [self setLayoutIfNeededOnUpdate:NO];
 
             //Initializing disabled classes Set.
-            _disabledClasses = [[NSMutableSet alloc] initWithObjects:[UITableViewController class], nil];
-            _disabledToolbarClasses = [[NSMutableSet alloc] init];
+            _enabledClasses = [[NSMutableSet alloc] init];
+            _enabledToolbarClasses = [[NSMutableSet alloc] init];
 
 #ifdef NSFoundationVersionNumber_iOS_6_1
             [self setShouldToolbarUsesTextFieldTintColor:NO];
@@ -1015,18 +1015,7 @@ void _IQShowLog(NSString *logString);
         {
             UIViewController *textFieldViewController = [_textFieldView viewController];
             
-            BOOL shouldIgnore = NO;
-            
-            for (Class disabledClass in _disabledClasses)
-            {
-                if ([textFieldViewController isKindOfClass:disabledClass])
-                {
-                    shouldIgnore = YES;
-                    break;
-                }
-            }
-    
-            if (shouldIgnore == NO)
+            if ([self isEnableInViewControllerClass:[textFieldViewController class]])
             {
                 [self adjustFrame];
             }
@@ -1247,20 +1236,7 @@ void _IQShowLog(NSString *logString);
         //Getting textField viewController
         UIViewController *textFieldViewController = [_textFieldView viewController];
         
-        BOOL shouldIgnore = NO;
-        
-        for (Class disabledClass in _disabledClasses)
-        {
-            //If viewController is kind of disabled viewController class, then ignoring to adjust view.
-            if ([textFieldViewController isKindOfClass:disabledClass])
-            {
-                shouldIgnore = YES;
-                break;
-            }
-        }
-        
-        //If shouldn't ignore.
-        if (shouldIgnore == NO)
+        if ([self isEnableInViewControllerClass:[textFieldViewController class]])
         {
             //  keyboard is already showing. adjust frame.
             [self adjustFrame];
@@ -1569,12 +1545,10 @@ void _IQShowLog(NSString *logString);
     UIViewController *textFieldViewController = [_textFieldView viewController];
     
     //If found any toolbar disabled classes then return. Will not add any toolbar.
-    for (Class disabledToolbarClass in _disabledToolbarClasses)
-        if ([textFieldViewController isKindOfClass:disabledToolbarClass])
-        {
-            [self removeToolbarIfRequired];
-            return;
-        }
+    if (![self isEnableToolbarInViewControllerClass:[textFieldViewController class]]) {
+        [self removeToolbarIfRequired];
+        return;
+    }
     
     //	Getting all the sibling textFields.
     NSArray *siblings = [self responderViews];
@@ -1833,39 +1807,39 @@ void _IQShowLog(NSString *logString);
 #pragma mark - Tracking untracking
 
 /** Disable adjusting view in disabledClass     */
--(void)disableInViewControllerClass:(Class)disabledClass
+-(void)enableInViewControllerClass:(Class)enabledClass
 {
-    [_disabledClasses addObject:disabledClass];
+    [_enabledClasses addObject:enabledClass];
 }
 
 /** Re-enable adjusting textField in disabledClass  */
--(void)removeDisableInViewControllerClass:(Class)disabledClass
+-(void)removeEnableInViewControllerClass:(Class)enabledClass
 {
-    [_disabledClasses removeObject:disabledClass];
+    [_enabledClasses removeObject:enabledClass];
 }
 
 /** Returns YES if ViewController class is disabled for library, otherwise returns NO. */
--(BOOL)isDisableInViewControllerClass:(Class)disabledClass
+-(BOOL)isEnableInViewControllerClass:(Class)enabledClass
 {
-    return [_disabledClasses containsObject:disabledClass];
+    return [_enabledClasses containsObject:enabledClass];
 }
 
 /** Disable automatic toolbar creation in in toolbarDisabledClass   */
--(void)disableToolbarInViewControllerClass:(Class)toolbarDisabledClass
+-(void)enableToolbarInViewControllerClass:(Class)toolbarEnabledClass
 {
-    [_disabledToolbarClasses addObject:toolbarDisabledClass];
+    [_enabledToolbarClasses addObject:toolbarEnabledClass];
 }
 
 /** Re-enable automatic toolbar creation in in toolbarDisabledClass */
--(void)removeDisableToolbarInViewControllerClass:(Class)toolbarDisabledClass
+-(void)removeEnableToolbarInViewControllerClass:(Class)toolbarEnabledClass
 {
-    [_disabledToolbarClasses removeObject:toolbarDisabledClass];
+    [_enabledToolbarClasses removeObject:toolbarEnabledClass];
 }
 
 /** Returns YES if toolbar is disabled in ViewController class, otherwise returns NO.   */
--(BOOL)isDisableToolbarInViewControllerClass:(Class)toolbarDisabledClass
+-(BOOL)isEnableToolbarInViewControllerClass:(Class)toolbarEnabledClass
 {
-    return [_disabledToolbarClasses containsObject:toolbarDisabledClass];
+    return [_enabledToolbarClasses containsObject:toolbarEnabledClass];
 }
 
 /** Consider provided customView class as superView of all inner textField for calculating next/previous button logic.  */

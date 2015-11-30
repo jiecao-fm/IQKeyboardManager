@@ -220,42 +220,42 @@ extern NSInteger const kIQPreviousNextButtonToolbarTag;
  
  @param disabledClass Class in which library should not adjust view to show textField.
  */
--(void)disableInViewControllerClass:(nonnull Class)disabledClass;
+-(void)enableInViewControllerClass:(nonnull Class)enabledClass;
 
 /**
- Re-enable adjusting textField in disabledClass
+ Re-enable adjusting textField in enabledClass
  
- @param disabledClass Class in which library should re-enable adjust view to show textField.
+ @param enabledClass Class in which library should re-enable adjust view to show textField.
  */
--(void)removeDisableInViewControllerClass:(nonnull Class)disabledClass;
+-(void)removeEnableInViewControllerClass:(nonnull Class)enabledClass;
 
 /**
  Returns YES if ViewController class is disabled for library, otherwise returns NO.
  
  @param disabledClass Class which is to check for it's disability.
  */
--(BOOL)isDisableInViewControllerClass:(nonnull Class)disabledClass;
+-(BOOL)isEnableInViewControllerClass:(nonnull Class)enabledClass;
 
 /**
  Disable automatic toolbar creation in in toolbarDisabledClass
  
  @param toolbarDisabledClass Class in which library should not add toolbar over textField.
  */
--(void)disableToolbarInViewControllerClass:(nonnull Class)toolbarDisabledClass;
+-(void)enableToolbarInViewControllerClass:(nonnull Class)toolbarEnabledClass;
 
 /**
  Re-enable automatic toolbar creation in in toolbarDisabledClass
  
  @param toolbarDisabledClass Class in which library should re-enable automatic toolbar creation over textField.
  */
--(void)removeDisableToolbarInViewControllerClass:(nonnull Class)toolbarDisabledClass;
+-(void)removeEnableToolbarInViewControllerClass:(nonnull Class)toolbarEnabledClass;
 
 /**
  Returns YES if toolbar is disabled in ViewController class, otherwise returns NO.
  
  @param toolbarDisabledClass Class which is to check for toolbar disability.
  */
--(BOOL)isDisableToolbarInViewControllerClass:(nonnull Class)toolbarDisabledClass;
+-(BOOL)isEnableToolbarInViewControllerClass:(nonnull Class)toolbarEnabledClass;
 
 /**
  Consider provided customView class as superView of all inner textField for calculating next/previous button logic.
