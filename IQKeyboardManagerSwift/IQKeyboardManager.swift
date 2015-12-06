@@ -462,8 +462,8 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     @param disabledClass Class in which library should not adjust view to show textField.
     */
-    public func disableInViewControllerClass(disabledClass : AnyClass) {
-        _disabledClasses.insert(NSStringFromClass(disabledClass))
+    public func enableInViewControllerClass(enabledClass : AnyClass) {
+        _enabledClasses.insert(NSStringFromClass(enabledClass))
     }
     
     /**
@@ -471,8 +471,8 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     @param disabledClass Class in which library should re-enable adjust view to show textField.
     */
-    public func removeDisableInViewControllerClass(disabledClass : AnyClass) {
-        _disabledClasses.remove(NSStringFromClass(disabledClass))
+    public func removeEnableInViewControllerClass(enabledClass : AnyClass) {
+        _enabledClasses.remove(NSStringFromClass(enabledClass))
     }
     
     /**
@@ -480,8 +480,8 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     @param disabledClass Class which is to check for it's disability.
     */
-    public func isDisableInViewControllerClass(disabledClass : AnyClass) -> Bool {
-        return _disabledClasses.contains(NSStringFromClass(disabledClass))
+    public func isEnableInViewControllerClass(enabledClass : AnyClass) -> Bool {
+        return _enabledClasses.contains(NSStringFromClass(enabledClass))
     }
     
     /**
@@ -489,8 +489,8 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     @param toolbarDisabledClass Class in which library should not add toolbar over textField.
     */
-    public func disableToolbarInViewControllerClass(toolbarDisabledClass : AnyClass) {
-        _disabledToolbarClasses.insert(NSStringFromClass(toolbarDisabledClass))
+    public func disableToolbarInViewControllerClass(toolbarEnabledClass : AnyClass) {
+        _enabledToolbarClasses.insert(NSStringFromClass(toolbarEnabledClass))
     }
     
     /**
@@ -498,8 +498,8 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     @param toolbarDisabledClass Class in which library should re-enable automatic toolbar creation over textField.
     */
-    public func removeDisableToolbarInViewControllerClass(toolbarDisabledClass : AnyClass) {
-        _disabledToolbarClasses.remove(NSStringFromClass(toolbarDisabledClass))
+    public func removeEnableToolbarInViewControllerClass(toolbarEnabledClass : AnyClass) {
+        _enabledToolbarClasses.remove(NSStringFromClass(toolbarEnabledClass))
     }
     
     /**
@@ -507,8 +507,8 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     @param toolbarDisabledClass Class which is to check for toolbar disability.
     */
-    public func isDisableToolbarInViewControllerClass(toolbarDisabledClass : AnyClass) -> Bool {
-        return _disabledToolbarClasses.contains(NSStringFromClass(toolbarDisabledClass))
+    public func isEnableToolbarInViewControllerClass(toolbarEnabledClass : AnyClass) -> Bool {
+        return _enabledToolbarClasses.contains(NSStringFromClass(toolbarEnabledClass))
     }
     
     /**
@@ -602,10 +602,10 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     /*******************************************/
     
     /** Set of restricted classes for library */
-    private var         _disabledClasses  = Set<String>()
+    private var         _enabledClasses  = Set<String>()
     
     /** Set of restricted classes for adding toolbar */
-    private var         _disabledToolbarClasses  = Set<String>()
+    private var         _enabledToolbarClasses  = Set<String>()
     
     /** Set of permitted classes to add all inner textField as siblings */
     private var         _toolbarPreviousNextConsideredClass  = Set<String>()
@@ -659,7 +659,6 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
         _tapGesture.delegate = self
         _tapGesture.enabled = shouldResignOnTouchOutside
         
-        disableInViewControllerClass(UITableViewController)
         considerToolbarPreviousNextInViewClass(UITableView)
         considerToolbarPreviousNextInViewClass(UICollectionView)
     }
@@ -1324,22 +1323,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
                 
                 //Getting textField viewController
                 if let textFieldViewController = _textFieldView?.viewController() {
-                    
-                    var shouldIgnore = false
-                    
-                    for disabledClassString in _disabledClasses {
-                        
-                        if let disabledClass = NSClassFromString(disabledClassString) {
-                            //If viewController is kind of disabled viewController class, then ignoring to adjust view.
-                            if textFieldViewController.isKindOfClass(disabledClass) {
-                                shouldIgnore = true
-                                break
-                            }
-                        }
-                    }
-                    
-                    //If shouldn't ignore.
-                    if shouldIgnore == false  {
+                    if self.isEnableInViewControllerClass(textFieldViewController.dynamicType) {
                         //  keyboard is already showing. adjust frame.
                         adjustFrame()
                     }
@@ -1602,22 +1586,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
 
             //Getting textField viewController
             if let textFieldViewController = _textFieldView?.viewController() {
-                
-                var shouldIgnore = false
-                
-                for disabledClassString in _disabledClasses {
-                    
-                    if let disabledClass = NSClassFromString(disabledClassString) {
-                        //If viewController is kind of disabled viewController class, then ignoring to adjust view.
-                        if textFieldViewController.isKindOfClass(disabledClass) {
-                            shouldIgnore = true
-                            break
-                        }
-                    }
-                }
-                
-                //If shouldn't ignore.
-                if shouldIgnore == false  {
+                if self.isEnableInViewControllerClass(textFieldViewController.dynamicType) {
                     //  keyboard is already showing. adjust frame.
                     adjustFrame()
                 }
@@ -1753,19 +1722,11 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     
     /** Add toolbar if it is required to add on textFields and it's siblings. */
     private func addToolbarIfRequired() {
-        
+    
         if let textFieldViewController = _textFieldView?.viewController() {
-            
-            for disabledClassString in _disabledToolbarClasses {
-                
-                if let disabledClass = NSClassFromString(disabledClassString) {
-                    
-                    if textFieldViewController.isKindOfClass(disabledClass) {
-                        
-                        removeToolbarIfRequired()
-                        return
-                    }
-                }
+            if !isEnableToolbarInViewControllerClass(textFieldViewController.dynamicType) {
+                removeToolbarIfRequired()
+                return
             }
         }
         
