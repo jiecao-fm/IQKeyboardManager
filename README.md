@@ -74,7 +74,7 @@ Minimum Xcode Version: Xcode 7
 Minimum Xcode Version: Xcode 7
 
 
-Installation
+I nstallation
 ==========================
 
 #### Cocoapod Method:-
@@ -91,11 +91,7 @@ it simply add the following line to your Podfile: ([#236](https://github.com/hac
 
 *Swift 2.1 (Xcode 7.1)*
 
-`pod 'IQKeyboardManagerSwift'`
-
-*Or*
-
-`pod 'IQKeyboardManagerSwift', '3.3.4'`
+`pod 'IQKeyboardManagerSwift', :git => 'https://github.com/jiecao-fm/IQKeyboardManager.git', :branch => 'master'`
 
 *Swift 2.0 (Xcode 7.0)*
 
@@ -217,30 +213,6 @@ Manual Management:-
  If your textFields are inside any UIView and your UIView is pinned with **TopLayoutGuide/BotomLayoutGuide** then also you can map **TopLayoutGuide/BottomLayoutGuide** constraint with **IQLayoutGuideConstraint**. here are the screenshots:-
 ![image](https://raw.githubusercontent.com/hackiftekhar/IQKeyboardManager/v3.3.0/Screenshot/TopLayoutGuideIndirectMapping.jpg)
 ![image](https://raw.githubusercontent.com/hackiftekhar/IQKeyboardManager/v3.3.0/Screenshot/BottomLayoutGuideIndirectMapping.jpg)
-
-#### Disable for a ViewController:-
-
- If you would like to disable `IQKeyboardManager` for a particular ViewController then register ViewController with `-(void)disableInViewControllerClass:(Class)disabledClass` method in AppDelegate.([#117](https://github.com/hackiftekhar/IQKeyboardManager/issues/117),[#139](https://github.com/hackiftekhar/IQKeyboardManager/issues/139))
-
-```
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [[IQKeyboardManager sharedManager] disableInViewControllerClass:[ViewController class]];
-    return YES;
-}
-```
-
-#### Disable toolbar for a ViewController:-
-
-If you would like to disable `Auto Toolbar` for a particular ViewController then register ViewController with `-(void)disableToolbarInViewControllerClass:(Class)disabledClass` method in AppDelegate.
-
-```
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [[IQKeyboardManager sharedManager] disableToolbarInViewControllerClass:[ViewController class]];
-    return YES;
-}
-```
 
 #### Considering Previous/Next buttons for textField inside customViews:-
 
